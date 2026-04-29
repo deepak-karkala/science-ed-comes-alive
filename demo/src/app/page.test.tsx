@@ -16,4 +16,13 @@ describe('HomePage', () => {
       '/teacher',
     )
   })
+
+  it('uses the design-system surface classes for the scaffold', () => {
+    render(<HomePage />)
+
+    expect(screen.getByRole('main')).toHaveClass('page-shell')
+    expect(screen.getByRole('link', { name: /electromagnetic induction/i })).toHaveClass(
+      'lesson-card',
+    )
+  })
 })
