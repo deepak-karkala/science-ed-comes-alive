@@ -1,37 +1,57 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
+'use client';
 
-const lessonTitles: Record<string, string> = {
-  '1': 'Electromagnetic Induction',
-  '2': 'Acid-Base + pH',
-  '3': 'Red Blood Cell Journey',
-}
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import { LESSONS } from '../../../data/lessons';
+import { LessonShell } from '../../../components/shell/LessonShell';
+import { FieldControls } from '../../../components/simulations/physics/FieldControls';
 
-interface LessonPageProps {
-  params: {
-    id: string
+// Dynamically import Three.js scene with ssr: false as per requirements
+const EMInductionScene = dynamic(
+  () => import('../../../components/simulations/physics/EMInductionScene'),
+  { 
+    ssr: false,
+    loading: () => <div className="w-full h-full flex items-center justify-center text-[var(--text-muted)] font-mono">Initializing Simulation Engine...</div>
   }
-}
+);
 
-export default function LessonPage({ params }: LessonPageProps) {
-  const title = lessonTitles[params.id]
+export default function LessonPage({ params }: { params: { id: string } }) {
+  const lesson = LESSONS.find(l => l.id === params.id);
+  
+  // Physics State (specifically for Lesson 1)
+  const [magneticField, setMagneticField] = useState(0.5);
+  const [velocity, setVelocity] = useState(0);
 
-  if (!title) {
-    notFound()
+  if (!lesson) {
+    return <div className="p-8 text-[var(--accent)] font-mono">Mission parameter invalid. 404.</div>;
+  }
+
+  let simulationArea = undefined;
+  let controlsArea = undefined;
+
+  // Specific wiring for Physics EM Induction lesson
+  if (lesson.id === '1') {
+    simulationArea = (
+      <EMInductionScene 
+        magneticField={magneticField} 
+        velocity={velocity} 
+      />
+    );
+    controlsArea = (
+      <FieldControls 
+        magneticField={magneticField}
+        onMagneticFieldChange={setMagneticField}
+        velocity={velocity}
+        onVelocityChange={setVelocity}
+      />
+    );
   }
 
   return (
-    <main className="page-shell">
-      <Link className="text-link" href="/">
-        Back to lessons
-      </Link>
-      <section className="panel">
-        <p className="micro-label">Lesson {params.id}</p>
-        <h1 className="wordmark mt-3">{title}</h1>
-        <p className="muted-copy mt-4">
-          Build-safe placeholder route. The lesson shell and verified simulation will be added in later tasks.
-        </p>
-      </section>
-    </main>
-  )
+    <LessonShell 
+      lesson={lesson} 
+      simulationArea={simulationArea}
+      controlsArea={controlsArea}
+    />
+  );
 }

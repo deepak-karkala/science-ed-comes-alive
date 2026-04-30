@@ -8,9 +8,11 @@ import { ApplyCard } from '../pedagogy/ApplyCard';
 
 interface LessonShellProps {
   lesson: LessonConfig;
+  simulationArea?: React.ReactNode;
+  controlsArea?: React.ReactNode;
 }
 
-export function LessonShell({ lesson }: LessonShellProps) {
+export function LessonShell({ lesson, simulationArea, controlsArea }: LessonShellProps) {
   const [phase, setPhase] = useState<LessonPhase>('PREDICT');
   const [language, setLanguage] = useState<Language>('en');
   
@@ -59,20 +61,30 @@ export function LessonShell({ lesson }: LessonShellProps) {
       <main className="flex-grow flex overflow-hidden">
         {/* Left Column: Simulation */}
         <section className="flex-1 flex flex-col border-r border-[var(--border)] relative bg-[var(--background)]">
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-[var(--text-muted)] border-b border-[var(--border)] gap-4">
-            <span>[ Simulation Area ]</span>
-            {phase !== 'PREDICT' && (
+          <div className="flex-1 flex flex-col p-4 border-b border-[var(--border)] relative">
+            {simulationArea || (
+              <div className="flex-1 flex items-center justify-center text-[var(--text-muted)]">
+                [ Simulation Area ]
+              </div>
+            )}
+            
+            {/* Mock trigger - hidden in production */}
+            {phase !== 'PREDICT' && !simulationArea && (
               <button 
                 onClick={handleExperimentInteraction}
-                className="px-4 py-2 bg-[var(--surface-hover)] border border-[var(--border)] rounded text-sm hover:text-[var(--text-primary)]"
+                className="absolute bottom-4 right-4 px-4 py-2 bg-[var(--surface-hover)] border border-[var(--border)] rounded text-sm hover:text-[var(--text-primary)]"
               >
                 Mock: Interact with Simulation
               </button>
             )}
           </div>
           {/* Controls Area */}
-          <div className="h-48 flex items-center justify-center p-4 bg-[var(--surface)]">
-            [ Controls Area ]
+          <div className="h-48 bg-[var(--surface)] border-b border-[var(--border)]">
+            {controlsArea || (
+              <div className="h-full flex items-center justify-center text-[var(--text-muted)]">
+                [ Controls Area ]
+              </div>
+            )}
           </div>
         </section>
 
