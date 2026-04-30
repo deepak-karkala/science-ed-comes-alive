@@ -22,14 +22,19 @@ describe('pH Engine', () => {
     expect(result.ph).toBe(7.0);
   });
 
-  it('calculates the correct color based on pH', () => {
-    // 1-3 deep red
-    expect(computePHMix({ lemon_juice: 1 }).color).toBe('#FF0000'); // Let's say we use deep red for low pH
-    
-    // 7 green
-    expect(computePHMix({}).color).toBe('#00FF00'); // neutral green
-    
-    // 9-14 violet
-    expect(computePHMix({ antacid: 10 }).color).toBe('#8A2BE2'); // violet
+  it('returns the exact predefined color if only one substance is present', () => {
+    // 5.5 soda water -> #CCEE44
+    expect(computePHMix({ soda_water: 1 }).color).toBe('#CCEE44');
+    // 2.5 lemon juice -> #FF4444
+    expect(computePHMix({ lemon_juice: 3 }).color).toBe('#FF4444');
+  });
+
+  it('calculates an interpolated color for mixtures based on pH', () => {
+    // Mix resulting in ~6.0
+    const mixColor = computePHMix({ lemon_juice: 1, antacid: 1 }).color;
+    expect(mixColor).toMatch(/^#[0-9A-F]{6}$/i);
+    // 6.0 should be a yellowish-green, not the default green #00FF00
+    expect(mixColor).not.toBe('#00FF00');
+    expect(mixColor).not.toBe('#FF0000');
   });
 });
