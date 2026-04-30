@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { LessonShell } from './LessonShell';
 import { PHYSICS_LESSON } from '../../data/lessons';
+
+vi.mock('../pedagogy/SocraticChat', () => ({
+  SocraticChat: ({ onExchange }: { onExchange: () => void }) => (
+    <button onClick={onExchange}>Mock: AI Exchange</button>
+  )
+}));
 
 describe('LessonShell', () => {
   it('renders lesson title and initial PREDICT phase', () => {
