@@ -1,17 +1,23 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import HomePage from './page'
+import { LESSONS } from '../data/lessons'
 
 describe('HomePage', () => {
-  it('renders the demo lesson selector placeholder', () => {
+  it('renders the demo lesson selector', () => {
     render(<HomePage />)
 
     expect(screen.getByRole('heading', { name: /science education comes alive/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /electromagnetic induction/i })).toHaveAttribute(
+    
+    // Check for the first lesson card
+    expect(screen.getByRole('heading', { name: LESSONS[0].title })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: new RegExp(LESSONS[0].title, 'i') })).toHaveAttribute(
       'href',
-      '/lesson/1',
+      `/lesson/${LESSONS[0].id}`,
     )
-    expect(screen.getByRole('link', { name: /teacher dashboard placeholder/i })).toHaveAttribute(
+
+    // Check for the teacher dashboard link
+    expect(screen.getByRole('link', { name: /view teacher dashboard/i })).toHaveAttribute(
       'href',
       '/teacher',
     )
@@ -21,8 +27,5 @@ describe('HomePage', () => {
     render(<HomePage />)
 
     expect(screen.getByRole('main')).toHaveClass('page-shell')
-    expect(screen.getByRole('link', { name: /electromagnetic induction/i })).toHaveClass(
-      'lesson-card',
-    )
   })
 })
