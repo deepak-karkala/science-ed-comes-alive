@@ -59,14 +59,14 @@ Scaffold + toolchain
 **Description:** Implement the Scientific-Warm Dark design system from `DESIGN.md` in global CSS and the root layout, including fonts, CSS variables, base typography, focus states, and stable page constraints.
 
 **Acceptance criteria:**
-- [ ] Root layout loads Fraunces, Plus Jakarta Sans/Noto Sans Devanagari fallback, and Geist Mono.
-- [ ] Global CSS defines the documented color, spacing, radius, motion, button, input, banner, and phase-dot tokens.
-- [ ] Placeholder pages render with dark background, warm text, accessible focus styles, and no layout overflow on mobile widths.
+- [x] Root layout loads Fraunces, Plus Jakarta Sans/Noto Sans Devanagari fallback, and Geist Mono.
+- [x] Global CSS defines the documented color, spacing, radius, motion, button, input, banner, and phase-dot tokens.
+- [x] Placeholder pages render with dark background, warm text, accessible focus styles, and no layout overflow on mobile widths.
 
 **Verification:**
-- [ ] `npm run lint`
-- [ ] `npm run typecheck`
-- [ ] Manual check: `/`, `/lesson/1`, and `/teacher` placeholders visually use the design tokens.
+- [x] `npm run lint`
+- [x] `npm run typecheck`
+- [x] Manual check: `/`, `/lesson/1`, and `/teacher` placeholders visually use the design tokens.
 
 **Dependencies:** Task 1
 
@@ -82,13 +82,13 @@ Scaffold + toolchain
 **Description:** Add shared TypeScript contracts for lesson configuration, phases, simulation outputs, AI chat messages, misconception events, language, and API request/response payloads.
 
 **Acceptance criteria:**
-- [ ] `SimulationOutput` requires `is_verified: true`.
-- [ ] Lesson IDs, phases, languages, misconception tags, and chat message shapes are strongly typed.
-- [ ] API request and response types exist for `/api/socratic` and `/api/misconception`.
+- [x] `SimulationOutput` requires `is_verified: true`.
+- [x] Lesson IDs, phases, languages, misconception tags, and chat message shapes are strongly typed.
+- [x] API request and response types exist for `/api/socratic` and `/api/misconception`.
 
 **Verification:**
-- [ ] `npm run typecheck`
-- [ ] Type-only imports compile from placeholder routes.
+- [x] `npm run typecheck`
+- [x] Type-only imports compile from placeholder routes.
 
 **Dependencies:** Task 1
 
@@ -105,13 +105,13 @@ Scaffold + toolchain
 **Description:** Build pure TypeScript engines for EM induction, pH mixing, and RBC circuit/color state.
 
 **Acceptance criteria:**
-- [ ] `computeEMF(velocity, fieldStrength)` returns EMF/current/brightness/electron density with `is_verified: true`.
-- [ ] `computePHMix(drops)` returns lookup-backed weighted pH, indicator color, and `is_verified: true`.
-- [ ] `computeRBCState(...)` and `computeRBCColor(...)` keep RBC color in red/maroon ranges and never blue/purple.
+- [x] `computeEMF(velocity, fieldStrength)` returns EMF/current/brightness/electron density with `is_verified: true`.
+- [x] `computePHMix(drops)` returns lookup-backed weighted pH, indicator color, and `is_verified: true`.
+- [x] `computeRBCState(...)` and `computeRBCColor(...)` keep RBC color in red/maroon ranges and never blue/purple.
 
 **Verification:**
-- [ ] `npm test -- src/lib/simulations`
-- [ ] `npm run typecheck`
+- [x] `npm test -- src/lib/simulations`
+- [x] `npm run typecheck`
 
 **Dependencies:** Task 3
 
@@ -137,13 +137,13 @@ Scaffold + toolchain
 **Description:** Encode the three lesson configs, static EN/HI strings, knowledge graph data, and teacher mock data needed by the shell and selector pages.
 
 **Acceptance criteria:**
-- [ ] Lesson configs include title, NCERT reference, subject, misconception targets, apply prompt, summary copy, and route ID.
-- [ ] Translation hook returns English and Hindi strings with stable keys and fallback behavior.
-- [ ] Teacher mock data includes 30 students and misconception states matching the demo script.
+- [x] Lesson configs include title, NCERT reference, subject, misconception targets, apply prompt, summary copy, and route ID.
+- [x] Translation hook returns English and Hindi strings with stable keys and fallback behavior.
+- [x] Teacher mock data includes 30 students and misconception states matching the demo script.
 
 **Verification:**
-- [ ] `npm test -- src/lib/i18n`
-- [ ] `npm run typecheck`
+- [x] `npm test -- src/lib/i18n`
+- [x] `npm run typecheck`
 
 **Dependencies:** Task 3
 
@@ -160,13 +160,13 @@ Scaffold + toolchain
 **Description:** Replace the placeholder landing page with three mission cards and navigation into the lessons, using the design system and real lesson data.
 
 **Acceptance criteria:**
-- [ ] Landing page shows Physics, Chemistry, and Biology mission cards with NCERT anchors and investor-friendly value statements.
-- [ ] Each card links to `/lesson/1`, `/lesson/2`, or `/lesson/3`.
-- [ ] Layout is mobile-first and does not use generic marketing hero/card-heavy patterns beyond the actual lesson cards.
+- [x] Landing page shows Physics, Chemistry, and Biology mission cards with NCERT anchors and investor-friendly value statements.
+- [x] Each card links to `/lesson/1`, `/lesson/2`, or `/lesson/3`.
+- [x] Layout is mobile-first and does not use generic marketing hero/card-heavy patterns beyond the actual lesson cards.
 
 **Verification:**
-- [ ] `npm run lint`
-- [ ] `npm run typecheck`
+- [x] `npm run lint`
+- [x] `npm run typecheck`
 - [ ] Manual check: cards navigate correctly.
 
 **Dependencies:** Tasks 2, 5
@@ -183,13 +183,13 @@ Scaffold + toolchain
 **Description:** Build `LessonShell` with phase gating, prediction state, language selection, simulation state handoff, AI exchange count, misconception event logging, and apply-card unlock.
 
 **Acceptance criteria:**
-- [ ] Student cannot enter `EXPERIMENT` until prediction is submitted.
-- [ ] Socratic chat unlocks only after first experiment interaction.
-- [ ] Apply card appears after at least two AI exchange turns.
+- [x] Student cannot enter `EXPERIMENT` until prediction is submitted.
+- [x] Socratic chat unlocks only after first experiment interaction.
+- [x] Apply card appears after at least two AI exchange turns.
 
 **Verification:**
-- [ ] `npm test -- LessonShell`
-- [ ] `npm run typecheck`
+- [x] `npm test -- LessonShell`
+- [x] `npm run typecheck`
 
 **Dependencies:** Tasks 3, 5
 
@@ -217,13 +217,13 @@ Scaffold + toolchain
 **Description:** Implement the field preset controls and an SSR-safe Physics scene component that reads from `computeEMF`, exposes simulation state to `LessonShell`, and renders stable readouts.
 
 **Acceptance criteria:**
-- [ ] Field presets map to 0.1T, 0.5T, and 1.0T.
-- [ ] Stationary wire produces zero brightness; moving wire increases brightness proportionally.
-- [ ] Three.js renderer uses `preserveDrawingBuffer: true` and is loaded with `ssr: false`.
+- [x] Field presets map to 0.1T, 0.5T, and 1.0T.
+- [x] Stationary wire produces zero brightness; moving wire increases brightness proportionally.
+- [x] Three.js renderer uses `preserveDrawingBuffer: true` and is loaded with `ssr: false`.
 
 **Verification:**
-- [ ] `npm test -- emInductionEngine`
-- [ ] `npm run build`
+- [x] `npm test -- emInductionEngine`
+- [x] `npm run build`
 - [ ] Manual check: `/lesson/1` scene area renders nonblank and readouts update.
 
 **Dependencies:** Tasks 4, 7
@@ -240,13 +240,13 @@ Scaffold + toolchain
 **Description:** Implement heuristic-first misconception classification for Physics and Biology, with typed confidence/tag output and no network dependency for heuristic hits.
 
 **Acceptance criteria:**
-- [ ] Physics keywords trigger `ELECTRICITY_STORED_MYTH` or `MAGNET_AS_SOURCE_MYTH` above threshold.
-- [ ] Biology keywords trigger `BLOOD_COLOR_MYTH` or `CIRCULATORY_ISOLATION_MYTH` above threshold.
-- [ ] Unknown text returns no misconception without throwing.
+- [x] Physics keywords trigger `ELECTRICITY_STORED_MYTH` or `MAGNET_AS_SOURCE_MYTH` above threshold.
+- [x] Biology keywords trigger `BLOOD_COLOR_MYTH` or `CIRCULATORY_ISOLATION_MYTH` above threshold.
+- [x] Unknown text returns no misconception without throwing.
 
 **Verification:**
-- [ ] `npm test -- misconceptionClassifier`
-- [ ] `npm run typecheck`
+- [x] `npm test -- misconceptionClassifier`
+- [x] `npm run typecheck`
 
 **Dependencies:** Task 3
 
@@ -262,13 +262,13 @@ Scaffold + toolchain
 **Description:** Implement `SocraticChat`, `MisconceptionAlert`, the Socratic SSE route, the misconception JSON route, OpenAI client wrapper, and `DEMO_MODE` fixture responses.
 
 **Acceptance criteria:**
-- [ ] `DEMO_MODE=true` returns deterministic Socratic tokens and misconception responses without `OPENAI_API_KEY`.
-- [ ] Without `DEMO_MODE` and without API key, endpoints fail with a clear non-secret error.
-- [ ] Chat posts verified simulation state and updates exchange count for apply-card unlock.
+- [x] `DEMO_MODE=true` returns deterministic Socratic tokens and misconception responses without `OPENAI_API_KEY`.
+- [x] Without `DEMO_MODE` and without API key, endpoints fail with a clear non-secret error.
+- [x] Chat posts verified simulation state and updates exchange count for apply-card unlock.
 
 **Verification:**
-- [ ] `npm test -- api`
-- [ ] `npm run build`
+- [x] `npm test -- api`
+- [x] `npm run build`
 - [ ] Manual check: `/lesson/1` can show a fixture AI response and misconception banner.
 
 **Dependencies:** Tasks 7, 9
