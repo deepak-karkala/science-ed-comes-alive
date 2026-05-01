@@ -6,23 +6,38 @@ import { LanguageToggle } from './LanguageToggle';
 import { PredictPrompt } from '../pedagogy/PredictPrompt';
 import { ApplyCard } from '../pedagogy/ApplyCard';
 import { SocraticChat } from '../pedagogy/SocraticChat';
+import { SimulationOutput } from '../../lib/types/simulation';
 
 interface LessonShellProps {
   lesson: LessonConfig;
   simulationArea?: React.ReactNode;
   controlsArea?: React.ReactNode;
+  simulationState?: SimulationOutput;
+  simulationInteractionCount?: number;
 }
 
-export function LessonShell({ lesson, simulationArea, controlsArea }: LessonShellProps) {
+export function LessonShell({
+  lesson,
+  simulationArea,
+  controlsArea,
+  simulationState,
+  simulationInteractionCount,
+}: LessonShellProps) {
   const [phase, setPhase] = useState<LessonPhase>('PREDICT');
   const [language, setLanguage] = useState<Language>('en');
   
   // State machine mock triggers for Task 7
-  const [experimentInteractions, setExperimentInteractions] = useState(0);
+  const [localExperimentInteractions, setLocalExperimentInteractions] = useState(0);
   const [aiExchangeCount, setAiExchangeCount] = useState(0);
+  const experimentInteractions = simulationInteractionCount ?? localExperimentInteractions;
+  const fallbackSimulationState = {
+    is_verified: true,
+    phase,
+    experimentInteractions,
+  } as SimulationOutput;
 
   const handleExperimentInteraction = () => {
-    setExperimentInteractions(prev => prev + 1);
+    setLocalExperimentInteractions(prev => prev + 1);
     if (phase === 'EXPERIMENT') {
       // Transition to EXPLAIN after first interaction
       setPhase('EXPLAIN');
@@ -120,8 +135,10 @@ export function LessonShell({ lesson, simulationArea, controlsArea }: LessonShel
           ) : (
             <div className="flex-1 flex flex-col min-h-0">
               <SocraticChat 
+                lessonId={lesson.id}
+                language={language}
                 subject={lesson.subject} 
-                simulationState={{ phase, experimentInteractions }} 
+                simulationState={simulationState ?? fallbackSimulationState} 
                 onExchange={handleAiExchange} 
               />
             </div>

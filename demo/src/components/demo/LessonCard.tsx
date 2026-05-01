@@ -30,7 +30,7 @@ export function LessonCard({ lesson, index }: LessonCardProps) {
       
       <div className="text-sm text-[var(--text-secondary)] mb-6 flex-grow">
         <p className="font-medium text-[var(--text-primary)] mb-1">
-          {lesson.summaryCopy.dinnerTableQuestion}
+          {lesson.valueStatement}
         </p>
         <p className="opacity-70 text-xs">
           {lesson.ncertReference}

@@ -5,6 +5,7 @@ interface FieldControlsProps {
   onMagneticFieldChange: (b: number) => void;
   velocity: number;
   onVelocityChange: (v: number) => void;
+  onInteract?: () => void;
 }
 
 const PRESETS = [0.1, 0.5, 1.0];
@@ -13,7 +14,8 @@ export function FieldControls({
   magneticField,
   onMagneticFieldChange,
   velocity,
-  onVelocityChange
+  onVelocityChange,
+  onInteract,
 }: FieldControlsProps) {
   return (
     <div className="w-full h-full flex flex-col justify-center gap-6 px-8">
@@ -28,7 +30,10 @@ export function FieldControls({
           {PRESETS.map((preset) => (
             <button
               key={preset}
-              onClick={() => onMagneticFieldChange(preset)}
+              onClick={() => {
+                onMagneticFieldChange(preset);
+                onInteract?.();
+              }}
               className={`flex-1 py-2 rounded-lg font-mono text-sm border transition-all ${
                 magneticField === preset
                   ? 'bg-[var(--accent)] border-[var(--accent)] text-white shadow-sm shadow-[var(--accent-glow)]'
@@ -58,7 +63,10 @@ export function FieldControls({
           max="5"
           step="0.1"
           value={velocity}
-          onChange={(e) => onVelocityChange(parseFloat(e.target.value))}
+          onChange={(e) => {
+            onVelocityChange(parseFloat(e.target.value));
+            onInteract?.();
+          }}
           className="w-full accent-[var(--accent)]"
         />
         <div className="flex justify-between mt-1 text-xs text-[var(--text-muted)] font-mono">
