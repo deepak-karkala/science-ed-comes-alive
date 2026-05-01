@@ -1,0 +1,49 @@
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import LessonPage from './page';
+
+vi.mock('next/dynamic', () => ({
+  default: () => function MockScene() {
+    return <div>Mock EM Scene</div>;
+  },
+}));
+
+vi.mock('../../../components/shell/LessonShell', () => ({
+  LessonShell: ({
+    lesson,
+    simulationArea,
+    controlsArea,
+    simulationState,
+    simulationInteractionCount,
+  }: {
+    lesson: { title: string };
+    simulationArea?: React.ReactNode;
+    controlsArea?: React.ReactNode;
+    simulationState?: { is_verified: true };
+    simulationInteractionCount?: number;
+  }) => (
+    <div>
+      <h1>{lesson.title}</h1>
+      <div data-testid="simulation-area">{simulationArea ?? 'no simulation'}</div>
+      <div data-testid="controls-area">{controlsArea ?? 'no controls'}</div>
+      <div data-testid="verified-state">{simulationState?.is_verified ? 'verified' : 'missing'}</div>
+      <div data-testid="interaction-count">{simulationInteractionCount ?? 0}</div>
+    </div>
+  ),
+}));
+
+describe('LessonPage', () => {
+  it('wires the verified physics scene and controls for lesson 1', () => {
+    render(<LessonPage params={{ id: '1' }} />);
+
+    expect(screen.getByRole('heading', { name: /magnetic magic/i })).toBeInTheDocument();
+    expect(screen.getByTestId('simulation-area')).toHaveTextContent('Mock EM Scene');
+    expect(screen.getByTestId('controls-area')).toHaveTextContent('0.1T');
+    expect(screen.getByTestId('verified-state')).toHaveTextContent('verified');
+  });
+
+  it('renders a 404 message for an unknown lesson route', () => {
+    render(<LessonPage params={{ id: '404' }} />);
+    expect(screen.getByText(/mission parameter invalid\. 404\./i)).toBeInTheDocument();
+  });
+});
