@@ -37,3 +37,9 @@ export function getTranslation(key: TranslationKey, lang: Language): string {
   }
   return en[key] ?? String(key);
 }
+
+export function useTranslations(lang: Language) {
+  return {
+    t: (key: TranslationKey) => getTranslation(key, lang),
+  };
+}

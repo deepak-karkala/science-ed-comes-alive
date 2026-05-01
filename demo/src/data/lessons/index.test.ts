@@ -23,4 +23,8 @@ describe('Lesson Data', () => {
       expect(lesson.summaryCopy.nextLessonPreview).toBeTruthy();
     }
   });
+
+  it('uses stable numeric route ids for the three lesson routes', () => {
+    expect(LESSONS.map((lesson) => lesson.id)).toEqual(['1', '2', '3']);
+  });
 });
