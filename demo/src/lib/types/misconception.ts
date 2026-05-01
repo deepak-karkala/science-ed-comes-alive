@@ -3,6 +3,8 @@ export type MisconceptionTag =
   | 'MAGNET_AS_SOURCE_MYTH'
   | 'BLOOD_COLOR_MYTH'
   | 'CIRCULATORY_ISOLATION_MYTH'
+  | 'ACID_ALWAYS_BURNS_MYTH'
+  | 'MORE_DROPS_CHANGES_PH_MYTH'
   | 'none';
 
 export interface MisconceptionEvent {
