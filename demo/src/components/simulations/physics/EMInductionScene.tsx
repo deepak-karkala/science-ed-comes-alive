@@ -25,6 +25,7 @@ export default function EMInductionScene({ magneticField, velocity }: EMInductio
 
   useEffect(() => {
     if (!mountRef.current) return;
+    const mountElement = mountRef.current;
 
     // 1. Setup Scene
     const scene = new THREE.Scene();
@@ -33,7 +34,7 @@ export default function EMInductionScene({ magneticField, velocity }: EMInductio
     // 2. Setup Camera
     const camera = new THREE.PerspectiveCamera(
       45,
-      mountRef.current.clientWidth / mountRef.current.clientHeight,
+      mountElement.clientWidth / mountElement.clientHeight,
       0.1,
       100
     );
@@ -45,8 +46,8 @@ export default function EMInductionScene({ magneticField, velocity }: EMInductio
       antialias: true,
       preserveDrawingBuffer: true // Required by acceptance criteria
     });
-    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-    mountRef.current.appendChild(renderer.domElement);
+    renderer.setSize(mountElement.clientWidth, mountElement.clientHeight);
+    mountElement.appendChild(renderer.domElement);
 
     // 4. Create Objects
     
@@ -101,9 +102,9 @@ export default function EMInductionScene({ magneticField, velocity }: EMInductio
 
     // Handle Resize
     const handleResize = () => {
-      if (!mountRef.current || !sceneRef.current) return;
-      const width = mountRef.current.clientWidth;
-      const height = mountRef.current.clientHeight;
+      if (!sceneRef.current) return;
+      const width = mountElement.clientWidth;
+      const height = mountElement.clientHeight;
       
       sceneRef.current.camera.aspect = width / height;
       sceneRef.current.camera.updateProjectionMatrix();
@@ -115,7 +116,7 @@ export default function EMInductionScene({ magneticField, velocity }: EMInductio
       window.removeEventListener('resize', handleResize);
       if (sceneRef.current) {
         cancelAnimationFrame(sceneRef.current.animationId);
-        mountRef.current?.removeChild(sceneRef.current.renderer.domElement);
+        mountElement.removeChild(sceneRef.current.renderer.domElement);
         sceneRef.current.renderer.dispose();
       }
     };
