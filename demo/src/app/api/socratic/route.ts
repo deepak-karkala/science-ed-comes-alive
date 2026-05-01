@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { DEMO_SOCRATIC_CHUNKS } from '../../../lib/ai/fixtures';
+import { SocraticRequest } from '../../../lib/types/ai';
 import OpenAI from 'openai';
 
 // This is a minimal wrapper. In production, error handling would be more robust.
@@ -10,8 +11,15 @@ const openai = !isDemoMode && process.env.OPENAI_API_KEY
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { messages, state } = body;
+    const body = (await req.json()) as Partial<SocraticRequest>;
+    const { lessonId, language, sessionHistory, simState, studentMessage } = body;
+
+    if (!lessonId || !language || !studentMessage || !simState || simState.is_verified !== true) {
+      return NextResponse.json(
+        { error: 'Missing lessonId, language, studentMessage, or verified simState.' },
+        { status: 400 }
+      );
+    }
 
     // Check for required configuration
     if (!isDemoMode && !openai) {
@@ -47,7 +55,8 @@ export async function POST(req: Request) {
     // Production OpenAI Call
     const systemPrompt = `You are Vigyan Dost, a Socratic science tutor. 
     You never give direct answers. Instead, you ask guiding questions.
-    The current student simulation state is: ${JSON.stringify(state)}.
+    Lesson route: ${lessonId}. Student language: ${language}.
+    The current student simulation state is: ${JSON.stringify(simState)}.
     Guide them to understand the concepts based on their current state.`;
 
     const response = await openai!.chat.completions.create({
@@ -55,7 +64,8 @@ export async function POST(req: Request) {
       stream: true,
       messages: [
         { role: 'system', content: systemPrompt },
-        ...(messages || [])
+        ...(sessionHistory || []),
+        { role: 'user', content: studentMessage },
       ],
       temperature: 0.7,
       max_tokens: 150,

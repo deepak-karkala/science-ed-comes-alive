@@ -1,20 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MisconceptionAlert } from './MisconceptionAlert';
 import { ClassificationResult } from '../../lib/ai/misconceptionClassifier';
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
+import { Language, LessonId, Subject } from '../../lib/types/lesson';
+import { ChatMessage, MisconceptionRequest, SocraticRequest } from '../../lib/types/ai';
+import { SimulationOutput } from '../../lib/types/simulation';
 
 interface SocraticChatProps {
-  subject: 'physics' | 'biology' | 'chemistry';
-  simulationState: any; // We pass the dynamic state to context the AI
+  lessonId: LessonId;
+  language: Language;
+  subject: Subject;
+  simulationState: SimulationOutput;
   onExchange: () => void; // Triggered when AI finishes a response
 }
 
-export function SocraticChat({ subject, simulationState, onExchange }: SocraticChatProps) {
-  const [messages, setMessages] = useState<Message[]>([
+export function SocraticChat({ lessonId, language, subject, simulationState, onExchange }: SocraticChatProps) {
+  const [messages, setMessages] = useState<ChatMessage[]>([
     { role: 'assistant', content: "Hello! What did you notice in the simulation?" }
   ]);
   const [input, setInput] = useState('');
@@ -33,7 +33,7 @@ export function SocraticChat({ subject, simulationState, onExchange }: SocraticC
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { role: 'user', content: input };
+    const userMessage: ChatMessage = { role: 'user', content: input };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
@@ -45,7 +45,10 @@ export function SocraticChat({ subject, simulationState, onExchange }: SocraticC
       const mcRes = await fetch('/api/misconception', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: userMessage.content, subject })
+        body: JSON.stringify({
+          lessonId,
+          studentResponse: userMessage.content,
+        } satisfies MisconceptionRequest)
       });
       
       if (!mcRes.ok) {
@@ -59,13 +62,18 @@ export function SocraticChat({ subject, simulationState, onExchange }: SocraticC
       }
 
       // 2. Stream Socratic response
+      const socraticPayload: SocraticRequest<typeof simulationState> = {
+        lessonId,
+        language,
+        sessionHistory: messages,
+        simState: simulationState,
+        studentMessage: userMessage.content,
+      };
+
       const aiRes = await fetch('/api/socratic', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          messages: [...messages, userMessage],
-          state: simulationState 
-        })
+        body: JSON.stringify(socraticPayload)
       });
 
       if (!aiRes.ok) {

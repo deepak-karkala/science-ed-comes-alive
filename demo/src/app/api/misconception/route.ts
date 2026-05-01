@@ -1,15 +1,17 @@
 import { NextResponse } from 'next/server';
 import { classifyMisconception } from '../../../lib/ai/misconceptionClassifier';
+import { getLessonById } from '../../../data/lessons';
+import { MisconceptionRequest } from '../../../lib/types/ai';
 
 const isDemoMode = process.env.DEMO_MODE === 'true';
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { text, subject } = body;
+    const body = (await req.json()) as Partial<MisconceptionRequest>;
+    const { lessonId, studentResponse } = body;
 
-    if (!text || !subject) {
-      return NextResponse.json({ error: 'Missing text or subject' }, { status: 400 });
+    if (!lessonId || !studentResponse) {
+      return NextResponse.json({ error: 'Missing lessonId or studentResponse' }, { status: 400 });
     }
 
     if (!isDemoMode && !process.env.OPENAI_API_KEY) {
@@ -19,10 +21,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // Since our misconception classifier is a fast local heuristic for now, 
-    // we use it directly even in production (as per Task 9).
-    // In a future advanced version, we might call OpenAI for zero-shot classification here.
-    const result = classifyMisconception(text, subject);
+    const lesson = getLessonById(lessonId);
+    if (!lesson) {
+      return NextResponse.json({ error: 'Unknown lessonId' }, { status: 400 });
+    }
+
+    const result = classifyMisconception(studentResponse, lesson.subject);
 
     return NextResponse.json({ result });
   } catch (error) {
