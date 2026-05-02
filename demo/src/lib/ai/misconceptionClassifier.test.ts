@@ -9,6 +9,13 @@ describe('misconceptionClassifier', () => {
     expect(result!.confidence).toBeGreaterThan(0.7);
   });
 
+  it('identifies ELECTRICITY_STORED_MYTH from "battery" keyword (demo plan spec)', () => {
+    const result = classifyMisconception('I think the battery stores electricity inside', 'physics');
+    expect(result).not.toBeNull();
+    expect(result!.tag).toBe('ELECTRICITY_STORED_MYTH');
+    expect(result!.confidence).toBeGreaterThan(0.7);
+  });
+
   it('identifies MAGNET_AS_SOURCE_MYTH from physics keywords', () => {
     const result = classifyMisconception('The magnet gives its energy to the bulb', 'physics');
     expect(result).not.toBeNull();

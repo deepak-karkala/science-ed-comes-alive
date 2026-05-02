@@ -1,32 +1,43 @@
-export type MisconceptionTag = 
-  | 'ELECTRICITY_STORED_MYTH' 
-  | 'MAGNET_AS_SOURCE_MYTH'
-  | 'BLOOD_COLOR_MYTH'
-  | 'CIRCULATORY_ISOLATION_MYTH';
+import { MisconceptionTag } from '../types/misconception';
 
 export interface ClassificationResult {
   tag: MisconceptionTag;
   confidence: number;
 }
 
+const TAG = {
+  ELECTRICITY_STORED: 'ELECTRICITY_STORED_MYTH' as MisconceptionTag,
+  MAGNET_AS_SOURCE:  'MAGNET_AS_SOURCE_MYTH'  as MisconceptionTag,
+  BLOOD_COLOR:       'BLOOD_COLOR_MYTH'       as MisconceptionTag,
+  CIRC_ISOLATION:    'CIRCULATORY_ISOLATION_MYTH' as MisconceptionTag,
+} as const;
+
 const HEURISTIC_DICTIONARY: Record<string, { tag: MisconceptionTag; keywords: string[] }[]> = {
   physics: [
     {
-      tag: 'ELECTRICITY_STORED_MYTH',
-      keywords: ['stored inside', 'already has electricity', 'contains electricity', 'electricity inside the wire']
+      tag: TAG.ELECTRICITY_STORED,
+      keywords: [
+        'battery', 'battery se', 'battery mein hai', 'battery stores',
+        'battery mein', 'stored inside', 'already has electricity',
+        'contains electricity', 'electricity inside the wire'
+      ]
     },
     {
-      tag: 'MAGNET_AS_SOURCE_MYTH',
-      keywords: ['magnet gives', 'energy from the magnet', 'magnet has energy', 'magnet powers']
+      tag: TAG.MAGNET_AS_SOURCE,
+      keywords: [
+        'magnet deta hai', 'magnet se milti', 'magnet se',
+        'magnet gives', 'magnet gives energy',
+        'energy from the magnet', 'magnet has energy', 'magnet powers'
+      ]
     }
   ],
   biology: [
     {
-      tag: 'BLOOD_COLOR_MYTH',
+      tag: TAG.BLOOD_COLOR,
       keywords: ['blood is blue', 'blue until', 'turns blue', 'deoxygenated blood is blue']
     },
     {
-      tag: 'CIRCULATORY_ISOLATION_MYTH',
+      tag: TAG.CIRC_ISOLATION,
       keywords: ['stays in the heart', 'isolated in', 'doesn\'t leave the heart']
     }
   ]
