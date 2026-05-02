@@ -45,12 +45,12 @@ function interpolateColor(ph: number): string {
   
   let c1, c2, ratio;
   if (ph < 7) {
-    c1 = hexToRgb('#FF0000'); // Red
-    c2 = hexToRgb('#00FF00'); // Green
+    c1 = hexToRgb('#FF4444'); // Red
+    c2 = hexToRgb('#4A7A3A'); // Muted olive-green (design-system neutral)
     ratio = (ph - 1) / 6; // Range from 1 to 7
   } else {
-    c1 = hexToRgb('#00FF00'); // Green
-    c2 = hexToRgb('#8A2BE2'); // Violet
+    c1 = hexToRgb('#4A7A3A'); // Muted olive-green
+    c2 = hexToRgb('#7B5EA7'); // Muted violet
     ratio = (ph - 7) / 7; // Range from 7 to 14
   }
   
@@ -75,7 +75,7 @@ export function computePHMix(drops: Drops): PHState {
 
   const ph = totalDrops === 0 ? 7.0 : Number((weightedPH / totalDrops).toFixed(2));
 
-  let color = '#00FF00'; // Default neutral green
+  let color = '#4A7A3A'; // Default muted neutral (fits dark theme)
   
   const activeSubstances = Object.entries(drops).filter(([_, count]) => count !== undefined && count > 0);
   if (activeSubstances.length === 1) {

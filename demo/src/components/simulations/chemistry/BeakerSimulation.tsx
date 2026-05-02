@@ -37,7 +37,7 @@ export function BeakerSimulation({ ph, color }: BeakerSimulationProps) {
       .attr('width', beakerW)
       .attr('height', beakerH)
       .attr('fill', 'none')
-      .attr('stroke', 'rgba(200,144,42,0.3)')
+      .attr('stroke', 'rgba(200,144,42,0.55)')
       .attr('stroke-width', 2)
       .attr('rx', 6);
 
@@ -64,11 +64,22 @@ export function BeakerSimulation({ ph, color }: BeakerSimulationProps) {
     svg.append('line')
       .attr('x1', scaleX).attr('y1', scaleTop)
       .attr('x2', scaleX).attr('y2', scaleTop + scaleH)
-      .attr('stroke', 'rgba(200,144,42,0.25)')
+      .attr('stroke', 'rgba(200,144,42,0.4)')
       .attr('stroke-width', 4)
       .attr('stroke-linecap', 'round');
 
-    // pH cursor dot on scale
+    // pH scale labels (1, 7, 14)
+    [1, 7, 14].forEach((val) => {
+      const labelY = scaleTop + scaleH * ((val - 1) / 13);
+      svg.append('text')
+        .attr('x', scaleX - 8)
+        .attr('y', labelY + 4)
+        .attr('text-anchor', 'end')
+        .attr('fill', 'rgba(200,144,42,0.4)')
+        .attr('font-size', '9')
+        .attr('font-family', 'monospace')
+        .text(val);
+    });
     const cursorY = scaleTop + scaleH * ((ph - 1) / 13);
 
     svg.append('circle')
@@ -88,7 +99,7 @@ export function BeakerSimulation({ ph, color }: BeakerSimulationProps) {
       .attr('rx', beakerW / 2)
       .attr('ry', 6)
       .attr('fill', 'none')
-      .attr('stroke', 'rgba(200,144,42,0.35)')
+      .attr('stroke', 'rgba(200,144,42,0.5)')
       .attr('stroke-width', 2);
 
   }, [ph, color]);
