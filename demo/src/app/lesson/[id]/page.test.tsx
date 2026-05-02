@@ -42,6 +42,17 @@ describe('LessonPage', () => {
     expect(screen.getByTestId('verified-state')).toHaveTextContent('verified');
   });
 
+  it('wires the verified chemistry scene and substance panel for lesson 2', () => {
+    render(<LessonPage params={{ id: '2' }} />);
+
+    expect(screen.getByRole('heading', { name: /the color of ph/i })).toBeInTheDocument();
+    // Chemistry simulation area should render (BeakerSimulation)
+    expect(screen.getByTestId('simulation-area')).toHaveTextContent(/ph value/i);
+    // Controls show substance buttons
+    expect(screen.getByTestId('controls-area')).toHaveTextContent(/नींबू पानी/i);
+    expect(screen.getByTestId('verified-state')).toHaveTextContent('verified');
+  });
+
   it('renders a 404 message for an unknown lesson route', () => {
     render(<LessonPage params={{ id: '404' }} />);
     expect(screen.getByText(/mission parameter invalid\. 404\./i)).toBeInTheDocument();
