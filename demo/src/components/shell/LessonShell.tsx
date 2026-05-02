@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LessonConfig, LessonPhase, Language } from '../../lib/types/lesson';
 import { LanguageToggle } from './LanguageToggle';
 import { PredictPrompt } from '../pedagogy/PredictPrompt';
@@ -39,10 +39,18 @@ export function LessonShell({
   const handleExperimentInteraction = () => {
     setLocalExperimentInteractions(prev => prev + 1);
     if (phase === 'EXPERIMENT') {
-      // Transition to EXPLAIN after first interaction
       setPhase('EXPLAIN');
     }
   };
+
+  // Detect simulation interactions (e.g., FieldControls slider/button) to trigger
+  // EXPERIMENT → EXPLAIN transition when real simulation components are provided.
+  // Functional setPhase avoids needing a phase ref in the dependency array.
+  useEffect(() => {
+    if (simulationInteractionCount && simulationInteractionCount > 0) {
+      setPhase(prev => (prev === 'EXPERIMENT' ? 'EXPLAIN' : prev));
+    }
+  }, [simulationInteractionCount]);
 
   const handleAiExchange = () => {
     const newCount = aiExchangeCount + 1;
