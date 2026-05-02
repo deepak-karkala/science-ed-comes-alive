@@ -4,13 +4,18 @@
 
 :root {
   --bg: #0c0c12;
+  --background: #0c0c12;
   --surface: #141420;
   --surface2: #1c1c2e;
+  --surface-hover: rgba(255, 255, 255, 0.04);
   --amber: #c8902a;
   --amber-dim: #8a611c;
   --amber-glow: rgba(200, 144, 42, 0.15);
+  --accent-glow: rgba(200, 144, 42, 0.15);
   --text: #f0efe9;
+  --text-primary: #f0efe9;
   --text-muted: #8a8980;
+  --text-secondary: #8a8980;
   --text-dim: #4a4a55;
   --success: #2e7d52;
   --error: #c0392b;
