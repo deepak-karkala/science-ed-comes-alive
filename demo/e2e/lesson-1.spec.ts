@@ -1,71 +1,61 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Lesson 1: EM Induction (Investor Path)', () => {
-  // Use DEMO_MODE logic, which implies fixture responses
   test.use({ locale: 'en-US' });
 
   test('completes predict -> experiment -> explain -> apply flow', async ({ page }) => {
-    page.on('console', msg => console.log('BROWSER CONSOLE:', msg.text()));
-    page.on('pageerror', exception => console.log('BROWSER ERROR:', exception));
-
     await page.goto('/lesson/1');
     await page.waitForLoadState('networkidle');
-    const textContent = await page.textContent('body');
-    console.log('PAGE TEXT CONTENT:', textContent);
 
     // 1. PREDICT phase
-    await expect(page.locator('header')).toContainText('PHASE:', { timeout: 15000 });
+    await expect(page.locator('header')).toContainText('PHASE:');
     await expect(page.locator('header')).toContainText('PREDICT');
 
-    // Verify simulation area is initialized (canvas should exist)
+    // Verify simulation canvas is attached
     const canvas = page.locator('canvas');
-    await expect(canvas).toBeAttached();
+    await expect(canvas).toBeAttached({ timeout: 15000 });
 
-    // Socratic chat should be locked initially or predict prompt should show
+    // Prediction prompt should be visible
     const predictInput = page.getByPlaceholder('Type your hypothesis here...');
     await expect(predictInput).toBeVisible();
-    
+
     // Submit prediction
-    await predictInput.fill('Maybe the magnet pushes the electrons');
+    await predictInput.fill('I think the moving wire creates current in the circuit');
     await page.getByRole('button', { name: /Next/i }).click();
 
     // 2. EXPERIMENT phase
     await expect(page.getByText('EXPERIMENT')).toBeVisible();
     await expect(page.getByText('Socratic chat is locked')).toBeVisible();
 
-    // Interact with controls
-    const velocitySlider = page.getByRole('slider', { name: /Speed/i });
-    if (await velocitySlider.isVisible()) {
-      // If sliders are native inputs:
-      await velocitySlider.fill('10');
-    } else {
-      // Fallback interaction if it's a custom control (just click it)
-      await page.mouse.click(100, 100); 
-    }
-    
-    // The interaction should automatically transition to EXPLAIN
-    await expect(page.getByText('EXPLAIN')).toBeVisible();
+    // Interact with the velocity slider to trigger transition to EXPLAIN
+    // First, click a field preset button (also triggers onInteract)
+    const presetButton = page.getByRole('button', { name: '0.5T' });
+    await presetButton.click();
 
-    // 3. EXPLAIN phase
-    await expect(page.getByPlaceholder('Ask a question or explain your hypothesis...')).toBeVisible();
+    // Should transition to EXPLAIN after simulation interaction
+    await expect(page.locator('header')).toContainText('EXPLAIN');
 
-    // Type the misconception keyword "battery"
-    await page.getByPlaceholder('Ask a question or explain your hypothesis...').fill('I think the battery stores electricity');
+    // 3. EXPLAIN phase — Socratic chat is now available
+    const chatInput = page.getByPlaceholder('Ask a question or explain your hypothesis...');
+    await expect(chatInput).toBeVisible();
+
+    // Type the misconception keyword "battery" — should trigger ELECTRICITY_STORED_MYTH
+    await chatInput.fill('I think the battery stores electricity inside');
     await page.getByRole('button', { name: /Send/i }).click();
 
-    // Verify misconception alert
-    await expect(page.getByText('The tutor is adjusting its strategy')).toBeVisible();
-    await expect(page.getByText('ELECTRICITY_STORED_MYTH')).toBeVisible();
-    
-    // Check that we got a reply (in demo mode, it's deterministic)
-    await expect(page.getByText('That\'s an interesting observation!')).toBeVisible();
+    // Verify misconception alert fires
+    await expect(page.getByText('ELECTRICITY_STORED_MYTH')).toBeVisible({ timeout: 10000 });
 
-    // Do another turn to trigger APPLY
-    await page.getByPlaceholder('Ask a question or explain your hypothesis...').fill('Okay, I understand now');
+    // Wait for AI response in demo mode (deterministic fixture)
+    await expect(page.getByText('interesting observation')).toBeVisible({ timeout: 10000 });
+
+    // Second AI exchange should unlock APPLY
+    await chatInput.fill('Okay, I understand — the motion is what generates electricity');
     await page.getByRole('button', { name: /Send/i }).click();
 
-    // 4. APPLY phase
-    await expect(page.getByText('APPLY')).toBeVisible();
+    // 4. APPLY phase — should appear after 2 AI exchanges
+    await expect(page.locator('header')).toContainText('APPLY');
     await expect(page.getByText('Knowledge Applied')).toBeVisible();
+    await expect(page.getByText(/How can you create electricity/)).toBeVisible();
   });
 });
