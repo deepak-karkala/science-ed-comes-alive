@@ -4,11 +4,14 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { computeEMF } from '../../../lib/simulations/emInductionEngine';
 import { computePHMix, type Drops } from '../../../lib/simulations/phEngine';
+import { createRBCState } from '../../../lib/simulations/rbcEngine';
 import { getLessonById } from '../../../data/lessons';
 import { LessonShell } from '../../../components/shell/LessonShell';
 import { FieldControls } from '../../../components/simulations/physics/FieldControls';
 import { BeakerSimulation } from '../../../components/simulations/chemistry/BeakerSimulation';
 import { SubstancePanel } from '../../../components/simulations/chemistry/SubstancePanel';
+import BloodCircuitScene from '../../../components/simulations/biology/BloodCircuitScene';
+import { HeartRateControl } from '../../../components/simulations/biology/HeartRateControl';
 
 // Dynamically import Three.js scene with ssr: false as per requirements
 const EMInductionScene = dynamic(
@@ -29,6 +32,9 @@ export default function LessonPage({ params }: { params: { id: string } }) {
 
   // Chemistry State (Lesson 2)
   const [drops, setDrops] = useState<Drops>({});
+
+  // Biology State (Lesson 3)
+  const [heartRate, setHeartRate] = useState(90);
 
   if (!lesson) {
     return <div className="p-8 text-[var(--accent)] font-mono">Mission parameter invalid. 404.</div>;
@@ -75,12 +81,43 @@ export default function LessonPage({ params }: { params: { id: string } }) {
     );
   }
 
+  // Specific wiring for Biology RBC Journey lesson
+  if (lesson.id === '3') {
+    const bioState = createRBCState({
+      position: 'artery',
+      o2Saturation: 98,
+      heartRate,
+      distanceTraveled: 0,
+      o2Delivered: 0,
+    });
+    simulationArea = (
+      <BloodCircuitScene heartRate={heartRate} o2Saturation={bioState.o2Saturation} />
+    );
+    controlsArea = (
+      <HeartRateControl
+        heartRate={heartRate}
+        onHeartRateChange={(bpm) => {
+          setHeartRate(bpm);
+          setInteractionCount((c) => c + 1);
+        }}
+      />
+    );
+  }
+
   const simState =
     lesson.id === '1'
       ? computeEMF(velocity, magneticField)
       : lesson.id === '2'
         ? computePHMix(drops)
-        : undefined;
+        : lesson.id === '3'
+          ? createRBCState({
+              position: 'artery',
+              o2Saturation: 98,
+              heartRate,
+              distanceTraveled: 0,
+              o2Delivered: 0,
+            })
+          : undefined;
 
   return (
     <LessonShell 

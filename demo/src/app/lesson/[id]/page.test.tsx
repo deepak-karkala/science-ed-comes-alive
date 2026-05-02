@@ -32,6 +32,13 @@ vi.mock('../../../components/shell/LessonShell', () => ({
   ),
 }));
 
+// BloodCircuitScene uses Three.js — mock for jsdom
+vi.mock('../../../components/simulations/biology/BloodCircuitScene', () => ({
+  default: ({ heartRate, o2Saturation }: { heartRate: number; o2Saturation: number }) => (
+    <div>Mock Blood Scene bpm={heartRate} o2={o2Saturation}</div>
+  ),
+}));
+
 describe('LessonPage', () => {
   it('wires the verified physics scene and controls for lesson 1', () => {
     render(<LessonPage params={{ id: '1' }} />);
@@ -50,6 +57,16 @@ describe('LessonPage', () => {
     expect(screen.getByTestId('simulation-area')).toHaveTextContent(/ph value/i);
     // Controls show substance buttons
     expect(screen.getByTestId('controls-area')).toHaveTextContent(/नींबू पानी/i);
+    expect(screen.getByTestId('verified-state')).toHaveTextContent('verified');
+  });
+
+  it('wires the verified biology scene and heart rate controls for lesson 3', () => {
+    render(<LessonPage params={{ id: '3' }} />);
+
+    expect(screen.getByRole('heading', { name: /blood flow journey/i })).toBeInTheDocument();
+    expect(screen.getByTestId('simulation-area')).toHaveTextContent(/mock blood scene/i);
+    // Controls show heart rate buttons
+    expect(screen.getByTestId('controls-area')).toHaveTextContent(/sleeping/i);
     expect(screen.getByTestId('verified-state')).toHaveTextContent('verified');
   });
 
