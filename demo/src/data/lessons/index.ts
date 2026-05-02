@@ -2,7 +2,7 @@ import { LessonConfig } from '../../lib/types/lesson';
 
 export const PHYSICS_LESSON: LessonConfig = {
   id: '1',
-  title: 'Magnetic Magic',
+  title: 'Electromagnetic Induction',
   ncertReference: 'NCERT Class 10, Chapter 13: Magnetic Effects of Electric Current',
   subject: 'physics',
   valueStatement: 'See a verified induction model turn motion into visible current and tutor-guided reasoning.',

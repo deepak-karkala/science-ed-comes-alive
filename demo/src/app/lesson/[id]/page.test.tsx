@@ -36,7 +36,7 @@ describe('LessonPage', () => {
   it('wires the verified physics scene and controls for lesson 1', () => {
     render(<LessonPage params={{ id: '1' }} />);
 
-    expect(screen.getByRole('heading', { name: /magnetic magic/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /electromagnetic induction/i })).toBeInTheDocument();
     expect(screen.getByTestId('simulation-area')).toHaveTextContent('Mock EM Scene');
     expect(screen.getByTestId('controls-area')).toHaveTextContent('0.1T');
     expect(screen.getByTestId('verified-state')).toHaveTextContent('verified');
