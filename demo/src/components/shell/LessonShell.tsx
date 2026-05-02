@@ -84,8 +84,8 @@ export function LessonShell({
       {/* Main Content Area */}
       <main className="flex-grow flex overflow-hidden">
         {/* Left Column: Simulation */}
-        <section className="flex-1 flex flex-col border-r border-[var(--border)] relative bg-[var(--background)]">
-          <div className="flex-1 flex flex-col p-4 border-b border-[var(--border)] relative">
+        <section className="flex-1 min-h-0 flex flex-col border-r border-[var(--border)] relative bg-[var(--background)]">
+          <div className="flex-1 min-h-0 flex flex-col p-4 border-b border-[var(--border)] relative overflow-hidden">
             {simulationArea || (
               <div className="flex-1 flex items-center justify-center text-[var(--text-muted)]">
                 [ Simulation Area ]
@@ -103,7 +103,7 @@ export function LessonShell({
             )}
           </div>
           {/* Controls Area */}
-          <div className="h-48 bg-[var(--surface)] border-b border-[var(--border)]">
+          <div className="h-56 bg-[var(--surface)] border-b border-[var(--border)]">
             {controlsArea || (
               <div className="h-full flex items-center justify-center text-[var(--text-muted)]">
                 [ Controls Area ]

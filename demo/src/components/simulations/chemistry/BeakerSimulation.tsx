@@ -16,45 +16,57 @@ export function BeakerSimulation({ ph, color }: BeakerSimulationProps) {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const W = svgRef.current.clientWidth || 300;
-    const H = svgRef.current.clientHeight || 320;
+    const W = 300;
+    const H = 320;
 
-    // Beaker bounding box
-    const beakerX = 50;
-    const beakerY = 30;
-    const beakerW = W - 100;
-    const beakerH = H - 60;
+    // Beaker bounding box — leave room for pH scale on left
+    const beakerX = 60;
+    const beakerY = 20;
+    const beakerW = W - 80;
+    const beakerH = H - 50;
+    const rx = 6;
+
+    // Clip path so liquid never leaks outside the beaker
+    const defs = svg.append('defs');
+    defs.append('clipPath')
+      .attr('id', 'beaker-clip')
+      .append('rect')
+      .attr('x', beakerX + 2)
+      .attr('y', beakerY + 2)
+      .attr('width', beakerW - 4)
+      .attr('height', beakerH - 4)
+      .attr('rx', rx - 1);
 
     // Liquid fill height scales with pH (pH 1-14 → fill 10-90%)
     const fillRatio = 0.1 + 0.8 * ((ph - 1) / 13);
     const liquidH = beakerH * fillRatio;
     const liquidY = beakerY + beakerH - liquidH;
 
-    // Beaker outline
+    // Beaker outline (drawn last so it sits on top of liquid)
+    // Liquid fill — clipped inside beaker
+    svg.append('rect')
+      .attr('x', beakerX)
+      .attr('y', liquidY)
+      .attr('width', beakerW)
+      .attr('height', liquidH + beakerH)
+      .attr('fill', color)
+      .attr('opacity', 0.85)
+      .attr('clip-path', 'url(#beaker-clip)')
+      .transition()
+      .duration(600)
+      .ease(d3.easeCubicOut)
+      .attr('y', liquidY);
+
+    // Beaker outline (on top)
     svg.append('rect')
       .attr('x', beakerX)
       .attr('y', beakerY)
       .attr('width', beakerW)
       .attr('height', beakerH)
       .attr('fill', 'none')
-      .attr('stroke', 'rgba(200,144,42,0.55)')
-      .attr('stroke-width', 2)
-      .attr('rx', 6);
-
-    // Liquid fill
-    svg.append('rect')
-      .attr('x', beakerX + 3)
-      .attr('y', liquidY)
-      .attr('width', beakerW - 6)
-      .attr('height', liquidH)
-      .attr('fill', color)
-      .attr('opacity', 0.85)
-      .attr('rx', 3)
-      .transition()
-      .duration(600)
-      .ease(d3.easeCubicOut)
-      .attr('y', liquidY)
-      .attr('height', liquidH);
+      .attr('stroke', 'rgba(200,144,42,0.7)')
+      .attr('stroke-width', 2.5)
+      .attr('rx', rx);
 
     // pH meter scale (left side)
     const scaleX = beakerX - 18;
@@ -105,8 +117,8 @@ export function BeakerSimulation({ ph, color }: BeakerSimulationProps) {
   }, [ph, color]);
 
   return (
-    <div className="w-full h-full relative">
-      <svg ref={svgRef} className="w-full h-full" viewBox="0 0 300 320" preserveAspectRatio="xMidYMid meet" />
+    <div className="w-full h-full relative flex items-center justify-center overflow-hidden">
+      <svg ref={svgRef} style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%' }} viewBox="0 0 300 320" preserveAspectRatio="xMidYMid meet" />
 
       {/* HUD overlays */}
       <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">

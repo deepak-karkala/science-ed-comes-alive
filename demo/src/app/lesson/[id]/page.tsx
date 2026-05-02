@@ -70,6 +70,7 @@ export default function LessonPage({ params }: { params: { id: string } }) {
     );
     controlsArea = (
       <SubstancePanel
+        drops={drops}
         onSubstanceDrop={(substanceId) => {
           setDrops((prev) => ({
             ...prev,

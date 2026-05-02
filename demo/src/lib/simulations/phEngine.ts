@@ -4,18 +4,19 @@ export type SubstanceId = 'lemon_juice' | 'vinegar' | 'tamarind_water' | 'soda_w
 
 export interface SubstanceDef {
   ph: number;
+  english: string;
   hindi: string;
   color: string;
 }
 
 export const SUBSTANCES: Record<SubstanceId, SubstanceDef> = {
-  lemon_juice:    { ph: 2.5, hindi: "नींबू पानी",   color: "#FF4444" },
-  vinegar:        { ph: 3.0, hindi: "सिरका",          color: "#FF6633" },
-  tamarind_water: { ph: 3.5, hindi: "इमली का पानी",  color: "#FF8844" },
-  soda_water:     { ph: 5.5, hindi: "सोडा वाटर",     color: "#CCEE44" },
-  milk:           { ph: 6.5, hindi: "दूध",             color: "#EEFF88" },
-  baking_soda:    { ph: 8.5, hindi: "खाने का सोडा",  color: "#88BBFF" },
-  antacid:        { ph: 9.5, hindi: "डाइजीन",         color: "#4488FF" },
+  lemon_juice:    { ph: 2.5, english: "Lemon Juice",    hindi: "नींबू पानी",   color: "#FF4444" },
+  vinegar:        { ph: 3.0, english: "Vinegar",         hindi: "सिरका",        color: "#FF6633" },
+  tamarind_water: { ph: 3.5, english: "Tamarind Water",  hindi: "इमली का पानी", color: "#FF8844" },
+  soda_water:     { ph: 5.5, english: "Soda Water",      hindi: "सोडा वाटर",    color: "#CCEE44" },
+  milk:           { ph: 6.5, english: "Milk",             hindi: "दूध",          color: "#EEFF88" },
+  baking_soda:    { ph: 8.5, english: "Baking Soda",     hindi: "खाने का सोडा", color: "#88BBFF" },
+  antacid:        { ph: 9.5, english: "Antacid",          hindi: "डाइजीन",       color: "#4488FF" },
 };
 
 export type Drops = Partial<Record<SubstanceId, number>>;
